@@ -1,527 +1,353 @@
 "use client";
-
 import React, { useState } from "react";
-import {
-  Mail,
-  Phone,
-  Briefcase,
-  Lock,
-  Settings as SettingsIcon,
-  Building2,
-  MapPin,
-  Clock,
-  User,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
-import Image from "next/image";
-import profile from "../../../public/profile.avif";
+import { ChevronRight, Mail, Phone, DollarSign, Tag, Calendar } from "lucide-react";
+import Link from "next/link";
+import { use } from "react";
 
-// Mock employee data - in a real app, this would come from an API based on the ID
+// Mock employee data - in a real app, this would come from an API
 const EMPLOYEE_DATA = {
-  id: "1",
-  name: "Aarav Mehta",
-  jobTitle: "Software Engineer",
-  department: "Research & Development",
-  jobPosition: "ReactJS Frontend Developer",
-  manager: "Hans Müller",
-  coach: "Ava Lewis",
-  workEmail: "aarav.mehta@email.com",
-  workMobile: "+91-9876543201",
-  workPhone: "123456789789",
-  employeeTags: ["Employee"],
-  avatar: "https://i.pravatar.cc/300?img=12",
+  employee_code: "EMP001",
+  first_name: "Aarav",
+  last_name: "Mehta",
+  email: "aarav.mehta@email.com",
+  phone: "+91-9876543201",
+  date_of_birth: "1990-05-15",
+  gender: "male",
+  marital_status: "single",
+  nationality: "Indian",
+  national_id: "ABCD1234567",
+  passport_number: "P12345678",
+  department_name: "Engineering",
+  job_position_name: "Software Engineer",
+  job_title_name: "Senior Developer",
+  work_location_name: "Dhaka Office",
+  manager_name: "John Smith",
+  employment_type: "full-time",
+  date_of_joining: "2020-01-15",
+  probation_end_date: "2020-07-15",
+  salary: "75000",
+  work_shift_name: "Morning Shift (9 AM - 5 PM)",
+  tags: ["Senior", "Remote", "Full-stack"],
+  is_active: true,
+  profile_picture: "",
+  street: "123 Main Street",
+  city: "Dhaka",
+  state: "Dhaka Division",
+  country: "Bangladesh",
+  postal_code: "1200",
+  emergency_contact_name: "Jane Mehta",
+  emergency_contact_relationship: "Spouse",
+  emergency_contact_phone: "+91-9876543202"
 };
 
-// Detail Tab Component for Work Info/Private Info/Settings
-const DetailTab = ({ active, label, icon: Icon, onClick }) => (
-  <button
-    onClick={onClick}
-    className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
-      active
-        ? "text-blue-600 border-blue-600"
-        : "text-gray-500 border-transparent hover:text-gray-700"
-    }`}
-  >
-    <Icon className="w-4 h-4" />
-    {label}
-  </button>
-);
-
-export default function ViewEmployeePage({ params }) {
-  const [detailTab, setDetailTab] = useState("work");
+export default function EmployeeDetailsPage({ params }) {
+  const unwrappedParams = use(params);
+  const [activeTab, setActiveTab] = useState("work");
 
   return (
     <>
-      {/* Main Content */}
-      <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div className="p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Left Column - Employee Info */}
-            <div className="lg:col-span-1 space-y-6">
-              {/* Name */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Name</h3>
-                <p className="text-3xl font-bold text-gray-900">
-                  {EMPLOYEE_DATA.name}
-                </p>
-              </div>
-
-              {/* Job Title */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Job Title
-                </h3>
-                <p className="text-base text-gray-900">{EMPLOYEE_DATA.jobTitle}</p>
-              </div>
-
-              {/* Work Emai */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Work Email
-                </h3>
-                <div className="flex items-center gap-2 text-gray-900">
-                  <Mail className="w-4 h-4 text-gray-400" />
-                  <span className="text-base">{EMPLOYEE_DATA.workEmail}</span>
-                </div>
-              </div>
-
-              {/* Work Mobile */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Work Mobile
-                </h3>
-                <div className="flex items-center gap-2 text-gray-900">
-                  <Phone className="w-4 h-4 text-gray-400" />
-                  <span className="text-base">{EMPLOYEE_DATA.workMobile}</span>
-                </div>
-              </div>
-
-              {/* Work Phone */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Work Phone
-                </h3>
-                <div className="flex items-center gap-2 text-gray-900">
-                  <Phone className="w-4 h-4 text-gray-400" />
-                  <span className="text-base">{EMPLOYEE_DATA.workPhone}</span>
-                </div>
-              </div>
-
-              {/* Employee Tags */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Employee Tags
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {EMPLOYEE_DATA.employeeTags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-pink-50 text-pink-700 border border-pink-200"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column - Additional Info */}
-            <div className="lg:col-span-1 space-y-6">
-
-              {/* Image */}
-              <div className="w-30 h-30 rounded-full overflow-hidden bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
-                  <Image
-                    src={profile}
-                    alt={EMPLOYEE_DATA.name}
-                    width={256}
-                    height={256}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-
-
-              {/* Department */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Department
-                </h3>
-                <p className="text-base text-gray-900">{EMPLOYEE_DATA.department}</p>
-              </div>
-
-              {/* Job Position */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Job Position
-                </h3>
-                <p className="text-base text-gray-900">
-                  {EMPLOYEE_DATA.jobPosition}
-                </p>
-              </div>
-
-              {/* Manager */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Manager</h3>
-                <p className="text-base text-gray-900">{EMPLOYEE_DATA.manager}</p>
-              </div>
-
-              {/* Coach */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Coach</h3>
-                <p className="text-base text-gray-900">{EMPLOYEE_DATA.coach}</p>
-              </div>
-            </div>
-
-
-          </div>
-        </div>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-gray-900">
+          {EMPLOYEE_DATA.first_name} {EMPLOYEE_DATA.last_name}
+        </h1>
       </div>
 
-      {/* Additional Details Sections */}
-      <div className="mt-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-        {/* Detail Tabs */}
-        <div className="border-b border-gray-200">
-          <div className="p-2 flex items-center gap-0">
-            <DetailTab
-              label="Work Information"
-              icon={Briefcase}
-              active={detailTab === "work"}
-              onClick={() => setDetailTab("work")}
-            />
-            <DetailTab
-              label="Private Information"
-              icon={Lock}
-              active={detailTab === "private"}
-              onClick={() => setDetailTab("private")}
-            />
-            <DetailTab
-              label="Settings"
-              icon={SettingsIcon}
-              active={detailTab === "settings"}
-              onClick={() => setDetailTab("settings")}
-            />
+      <div className="space-y-6">
+        {/* Basic Information Card */}
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              {/* Profile Photo */}
+              <div className="flex justify-center lg:justify-start">
+                <div className="w-32 h-32 rounded-full border-2 border-gray-300 flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100 overflow-hidden">
+                  {EMPLOYEE_DATA.profile_picture ? (
+                    <img 
+                      src={EMPLOYEE_DATA.profile_picture} 
+                      alt="Profile" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="text-4xl font-bold text-blue-600">
+                      {EMPLOYEE_DATA.first_name[0]}{EMPLOYEE_DATA.last_name[0]}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-500 mb-1">Employee Code</label>
+                <p className="text-base text-gray-900 font-medium">{EMPLOYEE_DATA.employee_code}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 mb-1">First Name</label>
+                  <p className="text-base text-gray-900">{EMPLOYEE_DATA.first_name}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 mb-1">Last Name</label>
+                  <p className="text-base text-gray-900">{EMPLOYEE_DATA.last_name}</p>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-500 mb-1">Email</label>
+                <div className="flex items-center gap-2 text-gray-900">
+                  <Mail className="w-4 h-4 text-gray-400" />
+                  <p className="text-base">{EMPLOYEE_DATA.email}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-500 mb-1">Phone</label>
+                <div className="flex items-center gap-2 text-gray-900">
+                  <Phone className="w-4 h-4 text-gray-400" />
+                  <p className="text-base">{EMPLOYEE_DATA.phone}</p>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-500 mb-1">Date of Birth</label>
+                <div className="flex items-center gap-2 text-gray-900">
+                  <Calendar className="w-4 h-4 text-gray-400" />
+                  <p className="text-base">{EMPLOYEE_DATA.date_of_birth}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 mb-1">Gender</label>
+                  <p className="text-base text-gray-900 capitalize">{EMPLOYEE_DATA.gender}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 mb-1">Marital Status</label>
+                  <p className="text-base text-gray-900 capitalize">{EMPLOYEE_DATA.marital_status}</p>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-500 mb-1">Nationality</label>
+                <p className="text-base text-gray-900">{EMPLOYEE_DATA.nationality}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 mb-1">National ID</label>
+                  <p className="text-base text-gray-900">{EMPLOYEE_DATA.national_id}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 mb-1">Passport Number</label>
+                  <p className="text-base text-gray-900">{EMPLOYEE_DATA.passport_number}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Work Information Tab */}
-        {detailTab === "work" && (
-          <div className="p-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Location Section */}
-              <div className="lg:col-span-2 border border-gray-400 rounded-lg p-4 relative">
-                <h3 className="text-base font-semibold text-gray-900 mb-6">Location</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Work Address</h4>
-                    <div className="flex items-center gap-2 text-gray-900">
-                      <Building2 className="w-4 h-4 text-gray-400" />
-                      <span className="text-base">BlueOcean Technologies Inc.</span>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Work Location</h4>
-                    <div className="flex items-center gap-2 text-gray-900">
-                      <MapPin className="w-4 h-4 text-gray-400" />
-                      <span className="text-base">Home</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Approvers Section */}
-              <div className="lg:col-span-2 border border-gray-400 rounded-lg p-4 relative mt-4">
-                <h3 className="text-base font-semibold text-gray-900 mb-6">Approvers</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Time Off</h4>
-                    <div className="flex items-center gap-2 text-gray-900">
-                      <User className="w-4 h-4 text-gray-400" />
-                      <span className="text-base">HR Admin</span>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Attendance Manager</h4>
-                    <div className="flex items-center gap-2 text-gray-900">
-                      <User className="w-4 h-4 text-gray-400" />
-                      <span className="text-base">Admin</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Schedule Section */}
-              <div className="lg:col-span-2 border border-gray-400 rounded-lg p-4 relative mt-4">
-                <h3 className="text-base font-semibold text-gray-900 mb-6">Schedule</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Working Hours</h4>
-                    <div className="flex items-center gap-2 text-gray-900">
-                      <Clock className="w-4 h-4 text-gray-400" />
-                      <span className="text-base">Flexible 40 hours/week</span>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Timezone</h4>
-                    <div className="flex items-center gap-2 text-gray-900">
-                      <Clock className="w-4 h-4 text-gray-400" />
-                      <span className="text-base">Asia/Kolkata</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Organization Details Section */}
-              <div className="lg:col-span-2 border border-gray-400 rounded-lg p-4 relative mt-4">
-                <h3 className="text-base font-semibold text-gray-900 mb-6">Organization Details</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Company</h4>
-                    <div className="flex items-center gap-2 text-gray-900">
-                      <Building2 className="w-4 h-4 text-gray-400" />
-                      <span className="text-base">TechNova Solutions Pvt. Ltd.</span>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Color</h4>
-                    <div className="flex items-center gap-2 text-gray-900">
-                      <span className="text-base">—</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+        {/* Work Information & Employment Details with Tabs */}
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+          {/* Tab Navigation */}
+          <div className="border-gray-200">
+            <nav className="p-2 flex items-center gap-6 border-b border-gray-200">
+              <button
+                onClick={() => setActiveTab("work")}
+                className={`px-6 py-3 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === "work"
+                    ? "border-blue-500 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                Work Information
+              </button>
+              <button
+                onClick={() => setActiveTab("employment")}
+                className={`px-6 py-3 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === "employment"
+                    ? "border-blue-500 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                Employment Details
+              </button>
+            </nav>
           </div>
-        )}
 
-        {/* Private Information Tab */}
-        {detailTab === "private" && (
+          {/* Tab Content */}
           <div className="p-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Private Contact Section */}
-              <div className="lg:col-span-2 border border-gray-400 rounded-lg p-4 relative">
-                <h3 className="text-base font-semibold text-gray-900 mb-6">Private Contact</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Work Information Tab */}
+            {activeTab === "work" && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="space-y-6">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Street Address</h4>
-                    <span className="text-base text-gray-900">—</span>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Department</label>
+                    <p className="text-base text-gray-900">{EMPLOYEE_DATA.department_name}</p>
                   </div>
+
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Street Address Line 2</h4>
-                    <span className="text-base text-gray-900">—</span>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Job Position</label>
+                    <p className="text-base text-gray-900">{EMPLOYEE_DATA.job_position_name}</p>
                   </div>
+
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">City</h4>
-                    <span className="text-base text-gray-900">—</span>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Job Title</label>
+                    <p className="text-base text-gray-900">{EMPLOYEE_DATA.job_title_name}</p>
                   </div>
+                </div>
+
+                <div className="space-y-6">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Post Code</h4>
-                    <span className="text-base text-gray-900">—</span>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Work Location</label>
+                    <p className="text-base text-gray-900">{EMPLOYEE_DATA.work_location_name}</p>
                   </div>
+
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Country</h4>
-                    <span className="text-base text-gray-900">—</span>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Manager</label>
+                    <p className="text-base text-gray-900">{EMPLOYEE_DATA.manager_name}</p>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">State</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Private Phone</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Private Email</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Private Car Plate</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Distance Home to Work</h4>
-                    <div className="flex items-center gap-2 text-gray-900">
-                      <MapPin className="w-4 h-4 text-gray-400" />
-                      <span className="text-base">0km</span>
+                </div>
+
+                <div className="lg:col-span-2">
+                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 mt-8 mb-6">Emergency Contact</h3>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div className="space-y-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-500 mb-1">Contact Name</label>
+                        <p className="text-base text-gray-900">{EMPLOYEE_DATA.emergency_contact_name}</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-500 mb-1">Relationship</label>
+                        <p className="text-base text-gray-900">{EMPLOYEE_DATA.emergency_contact_relationship}</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-500 mb-1">Contact Phone</label>
+                        <div className="flex items-center gap-2 text-gray-900">
+                          <Phone className="w-4 h-4 text-gray-400" />
+                          <p className="text-base">{EMPLOYEE_DATA.emergency_contact_phone}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+            )}
 
-              {/* Emergency Contact Section */}
-              <div className="lg:col-span-2 border border-gray-400 rounded-lg p-4 relative mt-4">
-                <h3 className="text-base font-semibold text-gray-900 mb-6">Emergency Contact</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Employment Details Tab */}
+            {activeTab === "employment" && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="space-y-6">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Contact Name</h4>
-                    <span className="text-base text-gray-900">—</span>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Employment Type</label>
+                    <p className="text-base text-gray-900 capitalize">{EMPLOYEE_DATA.employment_type.replace('-', ' ')}</p>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Contact Phone</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                </div>
-              </div>
 
-              {/* Work Permit Section */}
-              <div className="lg:col-span-2 border border-gray-400 rounded-lg p-4 relative mt-4">
-                <h3 className="text-base font-semibold text-gray-900 mb-6">Work Permit</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Visa Number</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Work Permit Number</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Visa Expiration Date</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Work Permit Expiration Date</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Work Permit Document</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Citizenship Section */}
-              <div className="lg:col-span-1 mt-4">
-                <h3 className="text-base font-semibold text-gray-900 mb-6">Citizenship</h3>
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Country</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">State</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Identification ID</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">SSN No</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">SIN No</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Passport ID</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Gender</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Date of Birth</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Country of Birth</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Phone Code</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Settings Tab */}
-        {detailTab === "settings" && (
-          <div className="p-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Employee Settings Section */}
-              <div className="lg:col-span-2 border border-gray-400 rounded-lg p-4 relative">
-                <h3 className="text-base font-semibold text-gray-900 mb-6">Employee Settings</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Active Employee</h4>
-                    <CheckCircle className="w-5 h-5 text-green-500" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Flexible Work Arrangement</h4>
-                    <XCircle className="w-5 h-5 text-red-500" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Fully Flexible Schedule</h4>
-                    <XCircle className="w-5 h-5 text-red-500" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Work Permit Scheduled Activity</h4>
-                    <XCircle className="w-5 h-5 text-red-500" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Related User</h4>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Date of Joining</label>
                     <div className="flex items-center gap-2 text-gray-900">
-                      <User className="w-4 h-4 text-gray-400" />
-                      <span className="text-base">Aarav Mehta</span>
+                      <Calendar className="w-4 h-4 text-gray-400" />
+                      <p className="text-base">{EMPLOYEE_DATA.date_of_joining}</p>
                     </div>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Departure Reason</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Departure Date</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Departure Description</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                </div>
-              </div>
 
-              {/* Additional Information Section */}
-              <div className="lg:col-span-2 border border-gray-400 rounded-lg p-4 relative mt-4">
-                <h3 className="text-base font-semibold text-gray-900 mb-6">Additional Information</h3>
-                <div className="grid grid-cols-1 gap-6">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Primary Language</h4>
-                    <span className="text-base text-gray-900">—</span>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Probation End Date</label>
+                    <div className="flex items-center gap-2 text-gray-900">
+                      <Calendar className="w-4 h-4 text-gray-400" />
+                      <p className="text-base">{EMPLOYEE_DATA.probation_end_date}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Additional Notes</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Notes</h4>
-                    <span className="text-base text-gray-900">—</span>
-                  </div>
-                </div>
-              </div>
 
-              {/* Attendance/Point of Sale Section */}
-              <div className="lg:col-span-1 mt-4">
-                <h3 className="text-base font-semibold text-gray-900 mb-6">Attendance/Point of Sale</h3>
-                <div className="space-y-4">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Badge ID</h4>
-                    <span className="text-base text-gray-900">—</span>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Salary</label>
+                    <div className="flex items-center gap-2 text-gray-900">
+                      <DollarSign className="w-4 h-4 text-gray-400" />
+                      <p className="text-base">{EMPLOYEE_DATA.salary}</p>
+                    </div>
                   </div>
+                </div>
+
+                <div className="space-y-6">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">PIN</h4>
-                    <span className="text-base text-gray-900">—</span>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Work Shift</label>
+                    <p className="text-base text-gray-900">{EMPLOYEE_DATA.work_shift_name}</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Tags</label>
+                    <div className="flex flex-wrap gap-2">
+                      {EMPLOYEE_DATA.tags.map((tag, index) => (
+                        <span
+                          key={index}
+                          className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Status</label>
+                    <div className="flex items-center gap-2">
+                      {EMPLOYEE_DATA.is_active ? (
+                        <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                          Active
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">
+                          Inactive
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-2">
+                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 mt-8 mb-6">Address</h3>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div className="space-y-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-500 mb-1">Street Address</label>
+                        <p className="text-base text-gray-900">{EMPLOYEE_DATA.street}</p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">City</label>
+                          <p className="text-base text-gray-900">{EMPLOYEE_DATA.city}</p>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">State</label>
+                          <p className="text-base text-gray-900">{EMPLOYEE_DATA.state}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">Country</label>
+                          <p className="text-base text-gray-900">{EMPLOYEE_DATA.country}</p>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-500 mb-1">Postal Code</label>
+                          <p className="text-base text-gray-900">{EMPLOYEE_DATA.postal_code}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </>
   );

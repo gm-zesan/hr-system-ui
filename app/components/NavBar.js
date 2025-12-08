@@ -17,14 +17,14 @@ export default function NavBar() {
   ];
 
   return (
-    <header className="bg-white border-b border-gray-200 h-16 px-4 md:px-6 flex items-center justify-between sticky top-0 z-50">
+    <header className="bg-white border-b border-gray-200 h-20 px-4 md:px-6 flex items-center justify-between sticky top-0 z-50">
       {/* Left: Logo & Title & Nav */}
       <div className="flex items-center gap-8">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 flex items-center justify-center">
-            <Hexagon className="text-purple-600 fill-purple-600 w-full h-full" />
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 flex items-center justify-center">
+            <Hexagon className="text-blue-600 fill-blue-600 w-full h-full" />
           </div>
-          <span className="text-xl font-bold text-gray-900">Employees</span>
+          <span className="text-xl font-bold text-gray-700">Employees</span>
         </div>
 
         <nav className="hidden md:flex items-center gap-6 text-md font-medium text-gray-500">

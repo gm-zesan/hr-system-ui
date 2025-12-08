@@ -69,7 +69,7 @@ const EmployeeCard = ({ employee, isSelected, onToggleSelect }) => {
           href={`/employees/${employee.id}`}
           className="flex items-center gap-1 text-gray-600 hover:text-gray-900 transition-colors z-10 relative"
         >
-          <Eye className="w-5 h-5" />
+          <Eye className="w-4 h-4" />
           <span className="text-base font-medium">View</span>
         </Link>
         
@@ -77,14 +77,14 @@ const EmployeeCard = ({ employee, isSelected, onToggleSelect }) => {
           href={`/employees/${employee.id}/edit`}
           className="flex items-center gap-1 text-blue-600 hover:text-blue-700 transition-colors z-10 relative"
         >
-          <Edit2 className="w-5 h-5" />
+          <Edit2 className="w-4 h-4" />
           <span className="text-base font-medium">Edit</span>
         </Link>
         
-        <button className="flex items-center gap-1 text-red-600 hover:text-red-700 transition-colors z-10 relative">
+        {/* <button className="flex items-center gap-1 text-red-600 hover:text-red-700 transition-colors z-10 relative">
           <Trash2 className="w-5 h-5" />
           <span className="text-base font-medium">Delete</span>
-        </button>
+        </button> */}
       </div>
     </div>
   );

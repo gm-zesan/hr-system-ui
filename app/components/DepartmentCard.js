@@ -1,6 +1,7 @@
 import React from "react";
 import { Eye, Edit2, Trash2, User, Building2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import profile from "../../public/profile.avif";
 
 const DepartmentCard = ({ department, isSelected, onToggleSelect }) => {
@@ -17,55 +18,64 @@ const DepartmentCard = ({ department, isSelected, onToggleSelect }) => {
         type="checkbox"
         checked={isSelected}
         onChange={() => onToggleSelect(department.id)}
-        className="absolute top-4 right-4 w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer"
+        className="absolute top-4 right-4 w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer z-10"
       />
 
-      {/* Department Avatar */}
-      <div className="flex justify-center mb-4 mt-2">
-        <div className="w-16 h-16 rounded-full overflow-hidden bg-orange-100">
-          <Image
-            src={profile}
-            alt={department.name}
-            className="w-full h-full object-cover"
-            width={40}
-            height={40}
-          />
+      {/* Clickable Card Area */}
+      <Link href={`/departments/${department.id}`} className="block">
+        {/* Department Avatar */}
+        <div className="flex justify-center mb-4 mt-2">
+          <div className="w-16 h-16 rounded-full overflow-hidden bg-orange-100">
+            <Image
+              src={profile}
+              alt={department.name}
+              className="w-full h-full object-cover"
+              width={40}
+              height={40}
+            />
+          </div>
         </div>
-      </div>
 
-      {/* Department Name */}
-      <h3 className="text-center font-bold text-lg text-gray-900 mb-4">
-        {department.name}
-      </h3>
+        {/* Department Name */}
+        <h3 className="text-center font-bold text-lg text-gray-900 mb-4">
+          {department.name}
+        </h3>
 
-      {/* Manager */}
-      <div className="flex items-center justify-start gap-2 text-gray-600 mb-2 px-1">
-        <User className="w-4 h-4 text-gray-500" />
-        <span className="text-sm">{department.manager}</span>
-      </div>
+        {/* Manager */}
+        <div className="flex items-center justify-start gap-2 text-gray-600 mb-2 px-1">
+          <User className="w-4 h-4 text-gray-500" />
+          <span className="text-sm">{department.manager_name}</span>
+        </div>
 
-      {/* Company */}
-      <div className="flex items-center justify-start gap-2 text-gray-600 mb-5 px-1">
-        <Building2 className="w-4 h-4 text-gray-500" />
-        <span className="text-sm">{department.company}</span>
-      </div>
+        {/* Company */}
+        <div className="flex items-start justify-start gap-2 text-gray-600 mb-5 px-1">
+          <Building2 className="w-4 h-4 text-gray-500" />
+          <span className="text-sm">{department.description}</span>
+        </div>
+      </Link>
 
       {/* Action Buttons */}
       <div className="flex items-center justify-start gap-4 pt-4 border-t border-gray-200">
-        <button className="flex items-center gap-1.5 text-gray-600 hover:text-gray-900 transition-colors text-sm">
+        <Link
+          href={`/departments/${department.id}`}
+          className="flex items-center gap-1.5 text-gray-600 hover:text-gray-900 transition-colors text-sm z-10 relative"
+        >
           <Eye className="w-4 h-4" />
           <span>View</span>
-        </button>
+        </Link>
 
-        <button className="flex items-center gap-1.5 text-blue-600 hover:text-blue-700 transition-colors text-sm">
+        <Link
+          href={`/departments/${department.id}/edit`}
+          className="flex items-center gap-1.5 text-blue-600 hover:text-blue-700 transition-colors text-sm z-10 relative"
+        >
           <Edit2 className="w-4 h-4" />
           <span>Edit</span>
-        </button>
+        </Link>
 
-        <button className="flex items-center gap-1.5 text-red-600 hover:text-red-700 transition-colors text-sm">
+        {/* <button className="flex items-center gap-1.5 text-red-600 hover:text-red-700 transition-colors text-sm z-10 relative">
           <Trash2 className="w-4 h-4" />
           <span>Delete</span>
-        </button>
+        </button> */}
       </div>
     </div>
   );

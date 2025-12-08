@@ -62,7 +62,7 @@ export default function CreateDepartmentPage() {
           </h2>
 
           {/* Form Fields */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-6">
             {/* Name */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
@@ -72,7 +72,21 @@ export default function CreateDepartmentPage() {
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                placeholder=""
+              />
+            </div>
+
+            {/* code */}
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-2">
+                Code
+              </label>
+              <input
+                type="text"
+                value={formData.code}
+                onChange={(e) => handleInputChange("code", e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 placeholder=""
               />
             </div>
@@ -85,7 +99,7 @@ export default function CreateDepartmentPage() {
               <select
                 value={formData.parentDepartment}
                 onChange={(e) => handleInputChange("parentDepartment", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white transition-colors"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white transition-colors"
               >
                 <option value="">Select an option</option>
                 <option value="administration">Administration</option>
@@ -102,7 +116,7 @@ export default function CreateDepartmentPage() {
               <select
                 value={formData.manager}
                 onChange={(e) => handleInputChange("manager", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white transition-colors text-gray-400"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white transition-colors text-gray-400"
               >
                 <option value="">Select Manager</option>
                 <option value="paul">Paul Williams</option>
@@ -111,46 +125,37 @@ export default function CreateDepartmentPage() {
               </select>
             </div>
 
-            {/* Company */}
+            {/* is_active */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Company
+                Active Status
               </label>
               <select
-                value={formData.company}
-                onChange={(e) => handleInputChange("company", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white transition-colors text-gray-400"
+                value={formData.is_active}
+                onChange={(e) => handleInputChange("is_active", e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white transition-colors"
               >
-                <option value="">Select Company</option>
-                <option value="technova">TechNova Solutions Pvt. Ltd.</option>
-                <option value="other">Other Company</option>
+                <option value="">Select Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
               </select>
             </div>
 
-            {/* Color */}
-            <div>
+
+            {/* Description */}
+            <div className="lg:col-span-3">
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Color
+                Description
               </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={formData.color}
-                  onChange={(e) => handleInputChange("color", e.target.value)}
-                  className="w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  placeholder=""
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded border border-gray-300 bg-white hover:bg-gray-50 transition-colors"
-                  onClick={() => {
-                    // Could open a color picker
-                  }}
-                >
-                  <span className="sr-only">Pick color</span>
-                </button>
-              </div>
+              <textarea
+                value={formData.description}
+                onChange={(e) => handleInputChange("description", e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                rows={4}
+                placeholder=""
+              ></textarea>
             </div>
+            
           </div>
         </div>
 
