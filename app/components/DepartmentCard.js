@@ -17,7 +17,7 @@ const DepartmentCard = ({ department, isSelected, onToggleSelect }) => {
         type="checkbox"
         checked={isSelected}
         onChange={() => onToggleSelect(department.id)}
-        className="absolute top-4 left-4 w-5 h-5 text-blue-600 rounded border-gray-300 cursor-pointer"
+        className="absolute top-4 right-4 w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer"
       />
 
       {/* Department Avatar */}
@@ -27,8 +27,8 @@ const DepartmentCard = ({ department, isSelected, onToggleSelect }) => {
             src={profile}
             alt={department.name}
             className="w-full h-full object-cover"
-            width={64}
-            height={64}
+            width={40}
+            height={40}
           />
         </div>
       </div>
@@ -39,7 +39,7 @@ const DepartmentCard = ({ department, isSelected, onToggleSelect }) => {
       </h3>
 
       {/* Manager */}
-      <div className="flex items-center justify-start gap-2 text-gray-600 mb-2.5 px-1">
+      <div className="flex items-center justify-start gap-2 text-gray-600 mb-2 px-1">
         <User className="w-4 h-4 text-gray-500" />
         <span className="text-sm">{department.manager}</span>
       </div>

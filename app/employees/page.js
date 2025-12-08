@@ -226,7 +226,7 @@ export default function Page() {
           <div className="flex items-center gap-3 mb-4">
             <input
               type="checkbox"
-              className="w-5 h-5 rounded border-gray-300 text-blue-600 cursor-pointer"
+              className="w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer"
               checked={
                 selectedEmployees.length === MOCK_EMPLOYEES.length &&
                 MOCK_EMPLOYEES.length > 0
