@@ -1,40 +1,50 @@
-"use client";
-
-import React, { useState } from "react";
+import React from "react";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { createDepartment } from "@/api/departments/createDepartment";
+import { getDepartments } from "@/api/departments/getDepartments";
+import CreateDepartmentForm from "./CreateDepartmentForm";
 
-export default function CreateDepartmentPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    parentDepartment: "",
-    manager: "",
-    company: "",
-    color: "",
-  });
+export default async function CreateDepartmentPage() {
+  // Fetch existing departments for parent dropdown
+  let departments = [];
+  try {
+    departments = await getDepartments();
+  } catch (error) {
+    console.error("Error fetching departments:", error);
+  }
 
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+  async function handleCreateDepartment(formData) {
+    "use server";
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
-  };
+    const action = formData.get("action");
 
-  const handleCreateAndAnother = (e) => {
-    e.preventDefault();
-    // Handle form submission and reset
-    console.log("Create and another:", formData);
-    setFormData({
-      name: "",
-      parentDepartment: "",
-      manager: "",
-      company: "",
-      color: "",
-    });
-  };
+    try {
+      const payload = {
+        name: formData.get("name"),
+        code: formData.get("code"),
+        description: formData.get("description") || null,
+        parent_department_id: formData.get("parent_department_id") 
+          ? parseInt(formData.get("parent_department_id")) 
+          : null,
+        manager_id: formData.get("manager_id") 
+          ? parseInt(formData.get("manager_id")) 
+          : null,
+        is_active: formData.get("is_active") === "true",
+      };
+
+      await createDepartment(payload);
+    } catch (error) {
+      console.error("Error creating department:", error);
+      throw error;
+    }
+
+    // Only redirect if action is "save", not "saveAndCreateAnother"
+    if (action === "save") {
+      redirect("/departments?success=true");
+    }
+  }
 
   return (
     <>
@@ -52,135 +62,11 @@ export default function CreateDepartmentPage() {
         <h1 className="text-3xl font-bold text-gray-900">Create Department</h1>
       </div>
 
-      {/* Main Form Container */}
-      <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
-        {/* Form Content */}
-        <div className="p-8">
-          {/* Section Header */}
-          <h2 className="text-lg font-semibold text-gray-900 mb-6">
-            General Information
-          </h2>
-
-          {/* Form Fields */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-6">
-            {/* Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Name<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                placeholder=""
-              />
-            </div>
-
-            {/* code */}
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Code
-              </label>
-              <input
-                type="text"
-                value={formData.code}
-                onChange={(e) => handleInputChange("code", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                placeholder=""
-              />
-            </div>
-
-            {/* Parent Department */}
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Parent Department
-              </label>
-              <select
-                value={formData.parentDepartment}
-                onChange={(e) => handleInputChange("parentDepartment", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white transition-colors"
-              >
-                <option value="">Select an option</option>
-                <option value="administration">Administration</option>
-                <option value="management">Management</option>
-                <option value="services">Professional Services</option>
-              </select>
-            </div>
-
-            {/* Manager */}
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Manager
-              </label>
-              <select
-                value={formData.manager}
-                onChange={(e) => handleInputChange("manager", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white transition-colors text-gray-400"
-              >
-                <option value="">Select Manager</option>
-                <option value="paul">Paul Williams</option>
-                <option value="john">John Carter</option>
-                <option value="sarah">Sarah Smith</option>
-              </select>
-            </div>
-
-            {/* is_active */}
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Active Status
-              </label>
-              <select
-                value={formData.is_active}
-                onChange={(e) => handleInputChange("is_active", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white transition-colors"
-              >
-                <option value="">Select Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-
-
-            {/* Description */}
-            <div className="lg:col-span-3">
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Description
-              </label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => handleInputChange("description", e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                rows={4}
-                placeholder=""
-              ></textarea>
-            </div>
-            
-          </div>
-        </div>
-
-        {/* Form Actions */}
-        <div className="px-8 py-4 bg-gray-50 border-t border-gray-200 flex items-center gap-4">
-          <button
-            onClick={handleSubmit}
-            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
-          >
-            Create
-          </button>
-          <button
-            onClick={handleCreateAndAnother}
-            className="px-6 py-2.5 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg border border-gray-300 transition-colors"
-          >
-            Create & create another
-          </button>
-          <Link
-            href="/departments"
-            className="px-6 py-2.5 hover:bg-gray-100 text-gray-700 font-medium rounded-lg transition-colors"
-          >
-            Cancel
-          </Link>
-        </div>
-      </div>
+      {/* Form Component */}
+      <CreateDepartmentForm 
+        createAction={handleCreateDepartment} 
+        departments={departments}
+      />
     </>
   );
 }
