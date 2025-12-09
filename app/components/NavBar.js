@@ -12,8 +12,6 @@ export default function NavBar() {
   const navItems = [
     { href: "/employees", label: "Employees" },
     { href: "/departments", label: "Departments" },
-    { href: "/job_positions", label: "Job Positions" },
-    { href: "/job_titles", label: "Job Titles" },
     { href: "/reportings", label: "Reportings" },
     { href: "/configurations", label: "Configurations" },
   ];

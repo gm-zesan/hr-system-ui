@@ -7,7 +7,7 @@ export default function ConfigurationsPage() {
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/configurations/activity-plans");
+    router.push("/configurations/work_locations");
   }, [router]);
 
   return null;

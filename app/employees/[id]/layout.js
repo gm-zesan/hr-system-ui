@@ -56,7 +56,7 @@ export default function EmployeeDetailsLayout({ children, params }) {
           {isResumesActive && "Manage Resumes"}
         </h1>
         <div className="flex items-center gap-3">
-          {/* <button className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium transition-colors shadow-sm relative">
+          {/* <button className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-2 rounded-lg font-medium transition-colors shadow-sm relative">
             <MessageSquare className="w-5 h-5" />
             <span className="absolute -top-1 -right-1 bg-white text-blue-600 text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-blue-600">
               0

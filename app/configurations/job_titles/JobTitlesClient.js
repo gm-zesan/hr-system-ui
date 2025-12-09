@@ -13,8 +13,7 @@ import {
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-import DepartmentCard from "@/app/components/DepartmentCard";
-import DepartmentListItem from "@/app/components/DepartmentListItem";
+import JobTitleListItem from "@/app/components/JobTitleListItem";
 
 // Tab Button Component
 const TabButton = ({ active, label, icon: Icon, onClick }) => (
@@ -31,8 +30,8 @@ const TabButton = ({ active, label, icon: Icon, onClick }) => (
   </button>
 );
 
-export default function DepartmentsClient({ 
-  departments, 
+export default function JobTitlesClient({ 
+  jobTitles, 
   total, 
   currentPage, 
   totalPages, 
@@ -44,18 +43,16 @@ export default function DepartmentsClient({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("Default");
-  const [selectedDepartments, setSelectedDepartments] = useState([]);
+  const [selectedJobTitles, setSelectedJobTitles] = useState([]);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
-  const [viewMode, setViewMode] = useState("grid");
   const [groupBy, setGroupBy] = useState("-");
   const [sortBy, setSortBy] = useState("-");
   const [showFilters, setShowFilters] = useState(false);
-  const [deleteModal, setDeleteModal] = useState({ show: false, id: null, name: "" });
+  const [deleteModal, setDeleteModal] = useState({ show: false, id: null, title: "" });
   const [isModalAnimating, setIsModalAnimating] = useState(false);
   
   // Filter states
   const [filterStatus, setFilterStatus] = useState("");
-  const [filterManager, setFilterManager] = useState("");
   const [filterCode, setFilterCode] = useState("");
 
   // Ref to track if toasts have been shown
@@ -84,7 +81,7 @@ export default function DepartmentsClient({
         params.delete('search');
       }
       params.set('page', '1'); // Reset to first page on search
-      router.push(`/departments?${params.toString()}`);
+      router.push(`/configurations/job_titles?${params.toString()}`);
     }, 500); // 500ms debounce
 
     return () => {
@@ -92,13 +89,13 @@ export default function DepartmentsClient({
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  }, [searchTerm, router, searchParams]);
+  }, [searchTerm]); // Removed router and searchParams from dependencies
 
   // Pagination handler
   const handlePageChange = (newPage) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('page', newPage.toString());
-    router.push(`/departments?${params.toString()}`);
+    router.push(`/configurations/job_titles?${params.toString()}`);
   };
 
   // Limit change handler
@@ -106,7 +103,7 @@ export default function DepartmentsClient({
     const params = new URLSearchParams(searchParams.toString());
     params.set('limit', newLimit.toString());
     params.set('page', '1'); // Reset to first page when changing limit
-    router.push(`/departments?${params.toString()}`);
+    router.push(`/configurations/job_titles?${params.toString()}`);
   };
 
   // Show success toast when redirected from create page
@@ -119,7 +116,7 @@ export default function DepartmentsClient({
       url.searchParams.delete('success');
       window.history.replaceState({}, '', url.toString());
       
-      toast.success("Department created successfully!");
+      toast.success("Job Title created successfully!");
     }
   }, [showSuccessToast]);
 
@@ -133,7 +130,7 @@ export default function DepartmentsClient({
       url.searchParams.delete('deleted');
       window.history.replaceState({}, '', url.toString());
       
-      toast.success("Department deleted successfully!");
+      toast.success("Job Title deleted successfully!");
     }
   }, [showDeletedToast]);
 
@@ -141,22 +138,20 @@ export default function DepartmentsClient({
   const filterCount = React.useMemo(() => {
     let count = 0;
     if (filterStatus) count++;
-    if (filterManager) count++;
     if (filterCode) count++;
     return count;
-  }, [filterStatus, filterManager, filterCode]);
+  }, [filterStatus, filterCode]);
 
   // Clear all filters
   const clearAllFilters = () => {
     setFilterStatus("");
-    setFilterManager("");
     setFilterCode("");
     setShowFilters(false);
   };
 
   // Handle delete
-  const handleDeleteClick = (id, name) => {
-    setDeleteModal({ show: true, id, name });
+  const handleDeleteClick = (id, title) => {
+    setDeleteModal({ show: true, id, title });
     // Trigger animation after modal is rendered
     setTimeout(() => {
       setIsModalAnimating(true);
@@ -165,63 +160,60 @@ export default function DepartmentsClient({
 
   const handleDeleteConfirm = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/departments/${deleteModal.id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/configurations/job_titles/${deleteModal.id}`, {
         method: 'DELETE',
       });
       
       if (!response.ok) {
-        throw new Error('Failed to delete department');
+        throw new Error('Failed to delete job position');
       }
       
       setIsModalAnimating(false);
       setTimeout(() => {
-        setDeleteModal({ show: false, id: null, name: "" });
+        setDeleteModal({ show: false, id: null, title: "" });
       }, 300);
-      toast.success("Department deleted successfully!");
+      toast.success("Job position deleted successfully!");
       router.refresh();
     } catch (error) {
-      toast.error(error.message || "Failed to delete department");
+      toast.error(error.message || "Failed to delete job position");
     }
   };
 
   const handleDeleteCancel = () => {
     setIsModalAnimating(false);
     setTimeout(() => {
-      setDeleteModal({ show: false, id: null, name: "" });
+      setDeleteModal({ show: false, id: null, title: "" });
     }, 300);
   };
 
   const toggleSelection = (id) => {
-    setSelectedDepartments((prev) =>
+    setSelectedJobTitles((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   };
 
   const toggleAll = () => {
-    if (selectedDepartments.length === departments.length) {
-      setSelectedDepartments([]);
+    if (selectedJobTitles.length === jobTitles.length) {
+      setSelectedJobTitles([]);
     } else {
-      setSelectedDepartments(departments.map((d) => d.id));
+      setSelectedJobTitles(jobTitles.map((d) => d.id));
     }
   };
 
-  // Filter departments (client-side filters only, search is handled by API)
-  const filteredDepartments = departments.filter((dept) => {
+  // Filter jobTitles (client-side filters only, search is handled by API)
+  const filteredJobTitles = jobTitles.filter((jp) => {
     const matchesStatus = !filterStatus || 
-      (filterStatus === "active" && dept.is_active) ||
-      (filterStatus === "inactive" && !dept.is_active);
-    
-    const matchesManager = !filterManager ||
-      dept.manager_name === filterManager;
+      (filterStatus === "active" && jp.is_active) ||
+      (filterStatus === "inactive" && !jp.is_active);
     
     const matchesCode = !filterCode ||
-      (dept.code && dept.code.toLowerCase().includes(filterCode.toLowerCase()));
+      (jp.code && jp.code.toLowerCase().includes(filterCode.toLowerCase()));
     
-    return matchesStatus && matchesManager && matchesCode;
+    return matchesStatus && matchesCode;
   });
 
-  // Sort departments
-  const sortedDepartments = [...filteredDepartments].sort((a, b) => {
+  // Sort jobTitles
+  const sortedJobTitles = [...filteredJobTitles].sort((a, b) => {
     if (sortBy === "name-asc") {
       return a.name.localeCompare(b.name);
     } else if (sortBy === "name-desc") {
@@ -234,30 +226,27 @@ export default function DepartmentsClient({
     return 0;
   });
 
-  // Group departments
-  const groupedDepartments = React.useMemo(() => {
+  // Group jobTitles
+  const groupedJobTitles = React.useMemo(() => {
     if (groupBy === "-") {
-      return { "All Departments": sortedDepartments };
-    } else if (groupBy === "manager") {
-      return sortedDepartments.reduce((groups, dept) => {
-        const key = dept.manager_name || "No Manager";
+      return { "All Job Titles": sortedJobTitles };
+    } else if (groupBy === "job_position_id") {
+      return sortedJobTitles.reduce((groups, jp) => {
+        const key = jp.job_position_id || "No Level";
         if (!groups[key]) groups[key] = [];
-        groups[key].push(dept);
+        groups[key].push(jp);
         return groups;
       }, {});
     } else if (groupBy === "status") {
-      return sortedDepartments.reduce((groups, dept) => {
-        const key = dept.is_active ? "Active" : "Inactive";
+      return sortedJobTitles.reduce((groups, jp) => {
+        const key = jp.is_active ? "Active" : "Inactive";
         if (!groups[key]) groups[key] = [];
-        groups[key].push(dept);
+        groups[key].push(jp);
         return groups;
       }, {});
     }
-    return { "All Departments": sortedDepartments };
-  }, [groupBy, sortedDepartments]);
-
-  // Get unique managers from departments
-  const uniqueManagers = [...new Set(departments.map(d => d.manager_name).filter(Boolean))];
+    return { "All Job Titles": sortedJobTitles };
+  }, [groupBy, sortedJobTitles]);
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
@@ -285,7 +274,6 @@ export default function DepartmentsClient({
               className="pl-24 pr-8 py-2 border border-gray-200 rounded-md text-sm bg-white focus:ring-1 focus:ring-blue-500 w-full md:w-48 appearance-none"
             >
               <option value="-">-</option>
-              <option value="manager">Manager</option>
               <option value="status">Status</option>
             </select>
             <ChevronRight className="rotate-90 w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
@@ -298,7 +286,7 @@ export default function DepartmentsClient({
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search departments..."
+              placeholder="Search job titles..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
@@ -334,32 +322,6 @@ export default function DepartmentsClient({
             </select>
             <ChevronRight className="rotate-90 w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
           </div>
-
-          {/* View Mode Toggle */}
-          <div className="flex items-center border border-gray-200 rounded-md overflow-hidden">
-            <button
-              onClick={() => setViewMode("grid")}
-              className={`p-2 transition-colors ${
-                viewMode === "grid"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-600 hover:bg-gray-50"
-              }`}
-              title="Grid View"
-            >
-              <Grid3x3 className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setViewMode("list")}
-              className={`p-2 transition-colors ${
-                viewMode === "list"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-600 hover:bg-gray-50"
-              }`}
-              title="List View"
-            >
-              <List className="w-4 h-4" />
-            </button>
-          </div>
         </div>
       </div>
 
@@ -375,7 +337,7 @@ export default function DepartmentsClient({
               Clear all
             </button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-2">
                 Status
@@ -388,21 +350,6 @@ export default function DepartmentsClient({
                 <option value="">All</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2">
-                Manager
-              </label>
-              <select 
-                value={filterManager}
-                onChange={(e) => setFilterManager(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:ring-1 focus:ring-blue-500"
-              >
-                <option value="">All Managers</option>
-                {uniqueManagers.map(manager => (
-                  <option key={manager} value={manager}>{manager}</option>
-                ))}
               </select>
             </div>
             <div>
@@ -421,125 +368,83 @@ export default function DepartmentsClient({
         </div>
       )}
 
-      {/* Selection Row + Department Grid/List */}
+      {/* Selection Row + Job Title Grid/List */}
       <div className="p-6">
-        {viewMode === "grid" && groupBy === "-" && (
-          <div className="flex items-center gap-3 mb-5">
-            <input
-              type="checkbox"
-              className="w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer"
-              checked={
-                selectedDepartments.length === sortedDepartments.length &&
-                sortedDepartments.length > 0
-              }
-              onChange={toggleAll}
-            />
-            <span className="text-sm text-gray-600">Select All</span>
-          </div>
-        )}
-
-        {/* Grid View */}
-        {viewMode === "grid" && (
-          <div>
-            {Object.entries(groupedDepartments).map(([groupName, depts]) => (
-              <div key={groupName} className="mb-6">
-                {groupBy !== "-" && (
-                  <h3 className="text-sm font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
-                    {groupName} ({depts.length})
-                  </h3>
-                )}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                  {depts.map((department) => (
-                    <DepartmentCard
-                      key={department.id}
-                      department={department}
-                      isSelected={selectedDepartments.includes(department.id)}
-                      onToggleSelect={toggleSelection}
-                      onDelete={handleDeleteClick}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* List View */}
-        {viewMode === "list" && (
-          <div>
-            {Object.entries(groupedDepartments).map(([groupName, depts]) => (
-              <div key={groupName} className="mb-6">
-                {groupBy !== "-" && (
-                  <h3 className="text-sm font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
-                    {groupName} ({depts.length})
-                  </h3>
-                )}
-                <div className="border border-gray-200 rounded-lg overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="bg-gray-50 border-b border-gray-200">
-                        <th className="p-2 text-left w-12">
-                          <input
-                            type="checkbox"
-                            className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer"
-                            checked={
-                              depts.every(d => selectedDepartments.includes(d.id)) &&
-                              depts.length > 0
+        
+        <div>
+          {Object.entries(groupedJobTitles).map(([groupName, jobTitlesGroup]) => (
+            <div key={groupName} className="mb-6">
+              {groupBy !== "-" && (
+                <h3 className="text-sm font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
+                  {groupName} ({jobTitlesGroup.length})
+                </h3>
+              )}
+              <div className="border border-gray-200 rounded-lg overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="p-2 text-left w-12">
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer"
+                          checked={
+                            jobTitlesGroup.every(jp => selectedJobTitles.includes(jp.id)) &&
+                            jobTitlesGroup.length > 0
+                          }
+                          onChange={() => {
+                            const allSelected = jobTitlesGroup.every(jp => selectedJobTitles.includes(jp.id));
+                            if (allSelected) {
+                              setSelectedJobTitles(prev => 
+                                prev.filter(id => !jobTitlesGroup.find(jp => jp.id === id))
+                              );
+                            } else {
+                              setSelectedJobTitles(prev => [
+                                ...prev,
+                                ...jobTitlesGroup.filter(jp => !prev.includes(jp.id)).map(jp => jp.id)
+                              ]);
                             }
-                            onChange={() => {
-                              const allSelected = depts.every(d => selectedDepartments.includes(d.id));
-                              if (allSelected) {
-                                setSelectedDepartments(prev => 
-                                  prev.filter(id => !depts.find(d => d.id === id))
-                                );
-                              } else {
-                                setSelectedDepartments(prev => [
-                                  ...prev,
-                                  ...depts.filter(d => !prev.includes(d.id)).map(d => d.id)
-                                ]);
-                              }
-                            }}
-                          />
-                        </th>
-                        <th className="p-2 text-left font-semibold text-sm text-gray-700">Name</th>
-                        <th className="p-2 text-left font-semibold text-sm text-gray-700">Manager</th>
-                        <th className="p-2 text-left font-semibold text-sm text-gray-700">Description</th>
-                        <th className="p-2 text-left font-semibold text-sm text-gray-700">Status</th>
-                        <th className="p-2 text-left font-semibold text-sm text-gray-700">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {depts.map((department) => (
-                        <DepartmentListItem
-                          key={department.id}
-                          department={department}
-                          isSelected={selectedDepartments.includes(department.id)}
-                          onToggleSelect={toggleSelection}
-                          onDelete={handleDeleteClick}
+                          }}
                         />
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </th>
+                      <th className="p-2 text-left font-semibold text-sm text-gray-700">Name</th>
+                      <th className="p-2 text-left font-semibold text-sm text-gray-700">Code</th>
+                      <th className="p-2 text-left font-semibold text-sm text-gray-700">Description</th>
+                      <th className="p-2 text-left font-semibold text-sm text-gray-700">Status</th>
+                      <th className="p-2 text-left font-semibold text-sm text-gray-700">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {jobTitlesGroup.map((jobTitle) => (
+                      <JobTitleListItem
+                        key={jobTitle.id}
+                        jobTitle={jobTitle}
+                        isSelected={selectedJobTitles.includes(jobTitle.id)}
+                        onToggleSelect={toggleSelection}
+                        onDelete={handleDeleteClick}
+                      />
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
+        
 
-        {sortedDepartments.length === 0 && (
+        {sortedJobTitles.length === 0 && (
           <div className="text-center py-12 text-gray-500">
-            No departments found matching your search.
+            No job titles found matching your search.
           </div>
         )}
 
         {/* Pagination */}
-        {sortedDepartments.length > 0 && (
+        {sortedJobTitles.length > 0 && (
           <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-lg border border-gray-200">
             {/* Pagination Info */}
             <div className="text-sm text-gray-600">
               Showing <span className="font-medium">{((currentPage - 1) * limit) + 1}</span> to{" "}
               <span className="font-medium">{Math.min(currentPage * limit, total)}</span> of{" "}
-              <span className="font-medium">{total}</span> departments
+              <span className="font-medium">{total}</span> job positions
             </div>
 
             {/* Pagination Controls */}
@@ -629,14 +534,14 @@ export default function DepartmentsClient({
           }`}>
             {/* Modal Header */}
             <div className="mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Delete Department</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Delete Job Title</h3>
             </div>
 
             {/* Modal Body */}
             <div className="mb-6">
               <p className="text-gray-600 mb-3">
-                Are you sure you want to delete the department{" "}
-                <span className="font-semibold text-gray-900">&ldquo;{deleteModal.name}&rdquo;</span>?
+                Are you sure you want to delete the job position{" "}
+                <span className="font-semibold text-gray-900">&ldquo;{deleteModal.title}&rdquo;</span>?
               </p>
               <p className="text-sm text-red-600 font-medium">
                 This action cannot be undone.

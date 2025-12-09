@@ -1,10 +1,10 @@
 import React from "react";
-import { Eye, Edit2 } from "lucide-react";
+import { Eye, Edit2, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import profile from "../../public/profile.avif";
 
-const DepartmentListItem = ({ department, isSelected, onToggleSelect }) => {
+const DepartmentListItem = ({ department, isSelected, onToggleSelect, onDelete }) => {
   const handleRowClick = (e) => {
     // Don't navigate if clicking on checkbox or action buttons
     if (
@@ -57,11 +57,6 @@ const DepartmentListItem = ({ department, isSelected, onToggleSelect }) => {
           </div>
         </td>
 
-        {/* code */}
-        <td className="p-2 text-sm text-gray-600">
-          {department.code || "-"}
-        </td>
-
         {/* Manager */}
         <td className="p-2 text-sm text-gray-600">
           {department.manager_name || "-"}
@@ -107,6 +102,17 @@ const DepartmentListItem = ({ department, isSelected, onToggleSelect }) => {
             >
               <Edit2 className="w-4 h-4" />
             </Link>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(department.id, department.name);
+              }}
+              className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors z-10 relative cursor-pointer"
+              title="Delete"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
           </div>
         </td>
       </tr>

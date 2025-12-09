@@ -1,8 +1,8 @@
 import React from "react";
-import { Eye, Edit2 } from "lucide-react";
+import { Eye, Edit2, Trash2 } from "lucide-react";
 import Link from "next/link";
 
-const JobPositionListItem = ({ jobPosition, isSelected, onToggleSelect }) => {
+const JobPositionListItem = ({ jobPosition, isSelected, onToggleSelect, onDelete }) => {
   const handleRowClick = (e) => {
     if (
       e.target.closest('input[type="checkbox"]') ||
@@ -12,7 +12,7 @@ const JobPositionListItem = ({ jobPosition, isSelected, onToggleSelect }) => {
     ) {
       return;
     }
-    window.location.href = `/job_positions/${jobPosition.id}`;
+    window.location.href = `/configurations/job_positions/${jobPosition.id}`;
   };
 
   return (
@@ -74,7 +74,7 @@ const JobPositionListItem = ({ jobPosition, isSelected, onToggleSelect }) => {
       <td className="p-2">
         <div className="flex items-center gap-1">
           <Link
-            href={`/job_positions/${jobPosition.id}`}
+            href={`/configurations/job_positions/${jobPosition.id}`}
             className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors z-10 relative"
             title="View"
             onClick={(e) => e.stopPropagation()}
@@ -83,13 +83,24 @@ const JobPositionListItem = ({ jobPosition, isSelected, onToggleSelect }) => {
           </Link>
 
           <Link
-            href={`/job_positions/${jobPosition.id}/edit`}
+            href={`/configurations/job_positions/${jobPosition.id}/edit`}
             className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors z-10 relative"
             title="Edit"
             onClick={(e) => e.stopPropagation()}
           >
             <Edit2 className="w-4 h-4" />
           </Link>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(jobPosition.id, jobPosition.title);
+            }}
+            className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors z-10 relative cursor-pointer"
+            title="Delete"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
         </div>
       </td>
     </tr>
