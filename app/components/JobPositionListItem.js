@@ -22,37 +22,25 @@ const JobPositionListItem = ({ jobPosition, isSelected, onToggleSelect, onDelete
                 isSelected ? "bg-blue-50/50" : "bg-white hover:bg-gray-50"
             }`}
         >
-            {/* Checkbox */}
-            <td className="p-2 w-12">
-                <input
-                    type="checkbox"
-                    checked={isSelected}
-                    onChange={(e) => {
-                        e.stopPropagation();
-                        onToggleSelect(jobPosition.id);
-                    }}
-                    className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer z-10"
-                />
-            </td>
 
             {/* Title */}
-            <td className="p-2">
+            <td className="p-2 px-4">
                 <span className="font-medium text-gray-900">{jobPosition.title}</span>
             </td>
 
             {/* Code */}
-            <td className="p-2 text-sm text-gray-600">{jobPosition.code || "-"}</td>
+            <td className="p-2 px-4 text-sm text-gray-600">{jobPosition.code || "-"}</td>
 
             {/* Level */}
-            <td className="p-2 text-sm text-gray-600">{jobPosition.level || "-"}</td>
+            <td className="p-2 px-4 text-sm text-gray-600">{jobPosition.level || "-"}</td>
 
             {/* Description */}
-            <td className="p-2 text-sm text-gray-600">
+            <td className="p-2 px-4 text-sm text-gray-600">
                 <div className="line-clamp-2">{jobPosition.description || "-"}</div>
             </td>
 
             {/* Status */}
-            <td className="p-2 text-sm text-gray-600">
+            <td className="p-2 px-4 text-sm text-gray-600">
                 {jobPosition.is_active ? (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                         Active
@@ -65,7 +53,7 @@ const JobPositionListItem = ({ jobPosition, isSelected, onToggleSelect, onDelete
             </td>
 
             {/* Action Buttons */}
-            <td className="p-2">
+            <td className="p-2 px-4">
                 <div className="flex items-center gap-1">
                     <Link
                         href={`/configurations/job_positions/${jobPosition.id}`}

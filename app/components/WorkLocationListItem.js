@@ -15,26 +15,18 @@ export default function WorkLocationListItem({
                 (window.location.href = `/configurations/work_locations/${workLocation.id}`)
             }
         >
-            <td className="p-2" onClick={(e) => e.stopPropagation()}>
-                <input
-                    type="checkbox"
-                    checked={isSelected}
-                    onChange={() => onToggleSelect(workLocation.id)}
-                    className="w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer"
-                />
-            </td>
-            <td className="p-2 text-sm text-gray-900 font-medium">{workLocation.name}</td>
-            <td className="p-2 text-sm text-gray-700">{workLocation.code || "-"}</td>
-            <td className="p-2 text-sm text-gray-700">{workLocation.city || "-"}</td>
-            <td className="p-2 text-sm text-gray-700">{workLocation.country || "-"}</td>
-            <td className="p-2 text-sm text-gray-700">
+            <td className="p-2 px-4 text-sm text-gray-900 font-medium">{workLocation.name}</td>
+            <td className="p-2 px-4 text-sm text-gray-700">{workLocation.code || "-"}</td>
+            <td className="p-2 px-4 text-sm text-gray-700">{workLocation.city || "-"}</td>
+            <td className="p-2 px-4 text-sm text-gray-700">{workLocation.country || "-"}</td>
+            <td className="p-2 px-4 text-sm text-gray-700">
                 {workLocation.address ? (
                     <span className="line-clamp-1">{workLocation.address}</span>
                 ) : (
                     "-"
                 )}
             </td>
-            <td className="p-2">
+            <td className="p-2 px-4">
                 {workLocation.is_active ? (
                     <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
                         Active
@@ -45,7 +37,7 @@ export default function WorkLocationListItem({
                     </span>
                 )}
             </td>
-            <td className="p-2" onClick={(e) => e.stopPropagation()}>
+            <td className="p-2 px-4" onClick={(e) => e.stopPropagation()}>
                 <div className="flex items-center gap-1">
                     <Link
                         href={`/configurations/work_locations/${workLocation.id}`}

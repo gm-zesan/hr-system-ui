@@ -414,59 +414,22 @@ export default function JobPositionsClient({
                                 <table className="w-full">
                                     <thead>
                                         <tr className="bg-gray-50 border-b border-gray-200">
-                                            <th className="p-2 text-left w-12">
-                                                <input
-                                                    type="checkbox"
-                                                    className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer"
-                                                    checked={
-                                                        jobPositionsGroup.every((jp) =>
-                                                            selectedJobPositions.includes(jp.id)
-                                                        ) && jobPositionsGroup.length > 0
-                                                    }
-                                                    onChange={() => {
-                                                        const allSelected = jobPositionsGroup.every(
-                                                            (jp) =>
-                                                                selectedJobPositions.includes(jp.id)
-                                                        );
-                                                        if (allSelected) {
-                                                            setSelectedJobPositions((prev) =>
-                                                                prev.filter(
-                                                                    (id) =>
-                                                                        !jobPositionsGroup.find(
-                                                                            (jp) => jp.id === id
-                                                                        )
-                                                                )
-                                                            );
-                                                        } else {
-                                                            setSelectedJobPositions((prev) => [
-                                                                ...prev,
-                                                                ...jobPositionsGroup
-                                                                    .filter(
-                                                                        (jp) =>
-                                                                            !prev.includes(jp.id)
-                                                                    )
-                                                                    .map((jp) => jp.id),
-                                                            ]);
-                                                        }
-                                                    }}
-                                                />
-                                            </th>
-                                            <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                            <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                 Title
                                             </th>
-                                            <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                            <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                 Code
                                             </th>
-                                            <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                            <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                 Level
                                             </th>
-                                            <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                            <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                 Description
                                             </th>
-                                            <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                            <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                 Status
                                             </th>
-                                            <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                            <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                 Actions
                                             </th>
                                         </tr>

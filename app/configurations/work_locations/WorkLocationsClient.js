@@ -7,7 +7,7 @@ import {
     Search,
     Filter,
     ChevronLeft,
-    ChevronRight as ChevronRightIcon,
+    ChevronRight as ChevronRightIcon
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
@@ -36,7 +36,7 @@ export default function WorkLocationsClient({
     limit,
     showSuccessToast,
     showDeletedToast,
-    initialSearch = "",
+    initialSearch = ""
 }) {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -164,7 +164,7 @@ export default function WorkLocationsClient({
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_BASE_URL}/work_locations/${deleteModal.id}`,
                 {
-                    method: "DELETE",
+                    method: "DELETE"
                 }
             );
 
@@ -410,64 +410,25 @@ export default function WorkLocationsClient({
                                 <table className="w-full">
                                     <thead>
                                         <tr className="bg-gray-50 border-b border-gray-200">
-                                            <th className="p-2 text-left w-12">
-                                                <input
-                                                    type="checkbox"
-                                                    className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer"
-                                                    checked={
-                                                        workLocationsGroup.every((wl) =>
-                                                            selectedWorkLocations.includes(wl.id)
-                                                        ) && workLocationsGroup.length > 0
-                                                    }
-                                                    onChange={() => {
-                                                        const allSelected =
-                                                            workLocationsGroup.every((wl) =>
-                                                                selectedWorkLocations.includes(
-                                                                    wl.id
-                                                                )
-                                                            );
-                                                        if (allSelected) {
-                                                            setSelectedWorkLocations((prev) =>
-                                                                prev.filter(
-                                                                    (id) =>
-                                                                        !workLocationsGroup.find(
-                                                                            (wl) => wl.id === id
-                                                                        )
-                                                                )
-                                                            );
-                                                        } else {
-                                                            setSelectedWorkLocations((prev) => [
-                                                                ...prev,
-                                                                ...workLocationsGroup
-                                                                    .filter(
-                                                                        (wl) =>
-                                                                            !prev.includes(wl.id)
-                                                                    )
-                                                                    .map((wl) => wl.id),
-                                                            ]);
-                                                        }
-                                                    }}
-                                                />
-                                            </th>
-                                            <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                            <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                 Name
                                             </th>
-                                            <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                            <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                 Code
                                             </th>
-                                            <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                            <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                 City
                                             </th>
-                                            <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                            <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                 Country
                                             </th>
-                                            <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                            <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                 Address
                                             </th>
-                                            <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                            <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                 Status
                                             </th>
-                                            <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                            <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                 Actions
                                             </th>
                                         </tr>
