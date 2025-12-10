@@ -4,11 +4,11 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function ReportingsPage() {
-  const router = useRouter();
+    const router = useRouter();
 
-  useEffect(() => {
-    router.push("/reportings/skills");
-  }, [router]);
+    useEffect(() => {
+        router.push("/reportings/skills");
+    }, [router]);
 
-  return null;
+    return null;
 }
