@@ -5,6 +5,8 @@ import Link from "next/link";
 import profile from "../../public/profile.avif";
 
 const EmployeeListItem = ({ employee, isSelected, onToggleSelect }) => {
+    const fullName = `${employee.first_name} ${employee.last_name}`;
+
     const handleRowClick = (e) => {
         // Don't navigate if clicking on checkbox or action buttons
         if (
@@ -32,18 +34,18 @@ const EmployeeListItem = ({ employee, isSelected, onToggleSelect }) => {
                         <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
                             <Image
                                 src={profile}
-                                alt={employee.name}
+                                alt={fullName}
                                 className="w-full h-full object-cover"
                                 width={40}
                                 height={40}
                             />
                         </div>
-                        <span className="font-medium text-gray-900">{employee.name}</span>
+                        <span className="font-medium text-gray-900">{fullName}</span>
                     </div>
                 </td>
 
-                {/* Job Position */}
-                <td className="p-2 text-sm text-gray-600">{employee.role}</td>
+                {/* Employee Code */}
+                <td className="p-2 text-sm text-gray-600">{employee.employee_code || "-"}</td>
 
                 {/* Email */}
                 <td className="p-2 text-sm text-gray-600">{employee.email || "-"}</td>
@@ -51,11 +53,18 @@ const EmployeeListItem = ({ employee, isSelected, onToggleSelect }) => {
                 {/* Phone */}
                 <td className="p-2 text-sm text-gray-600">{employee.phone || "-"}</td>
 
-                {/* Department */}
-                <td className="p-2 text-sm text-gray-600">{employee.department}</td>
-
-                {/* Manager */}
-                <td className="p-2 text-sm text-gray-600">{employee.manager || "-"}</td>
+                {/* Status */}
+                <td className="p-2">
+                    {employee.is_active ? (
+                        <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
+                            Active
+                        </span>
+                    ) : (
+                        <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700">
+                            Inactive
+                        </span>
+                    )}
+                </td>
 
                 {/* Action Buttons */}
                 <td className="p-2">

@@ -1,10 +1,15 @@
 import React from "react";
-import { Briefcase, Mail, Phone, Eye, Edit2, Trash2 } from "lucide-react";
-import Image from "next/image";
+import { Briefcase, Mail, Phone, Eye, Edit2, Trash2, Upload } from "lucide-react";
 import Link from "next/link";
-import profile from "../../public/profile.avif";
 
 const EmployeeCard = ({ employee, isSelected, onToggleSelect }) => {
+    const fullName = `${employee.first_name} ${employee.last_name}`;
+
+    // Use employee's profile picture from API or fallback to local static image
+    const profilePictureURL = employee.profile_picture
+        ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${employee.profile_picture}`
+        : `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/profiles/profile.avif`;
+
     return (
         <div
             className={`relative border rounded-2xl p-4 transition-all bg-white ${
@@ -18,31 +23,30 @@ const EmployeeCard = ({ employee, isSelected, onToggleSelect }) => {
                 {/* Employee Avatar - Large Circular */}
                 <div className="flex justify-center mb-3 mt-2">
                     <div className="w-30 h-30 rounded-full overflow-hidden bg-gradient-to-br from-purple-100 to-blue-100">
-                        <Image
-                            src={profile}
-                            alt={employee.name}
+                        <img
+                            src={profilePictureURL}
+                            alt={fullName}
                             className="w-full h-full object-cover"
+                            width={120}
+                            height={120}
+                            suppressHydrationWarning
                         />
                     </div>
                 </div>
 
                 {/* Name */}
-                <h3 className="text-center font-bold text-xl text-gray-900 mb-4">
-                    {employee.name}
-                </h3>
+                <h3 className="text-center font-bold text-xl text-gray-900 mb-4">{fullName}</h3>
 
-                {/* Role with Icon */}
+                {/* Employee Code with Icon */}
                 <div className="flex items-center justify-start gap-2 text-gray-700 mb-2 px-2">
                     <Briefcase className="w-5 h-5 text-gray-500" />
-                    <span className="text-base">{employee.role}</span>
+                    <span className="text-base">{employee.employee_code || "N/A"}</span>
                 </div>
 
                 {/* Email with Icon */}
                 <div className="flex items-center justify-start gap-2 text-gray-700 mb-2 px-2">
                     <Mail className="w-5 h-5 text-gray-500" />
-                    <span className="text-base truncate">
-                        {employee.email || "jhon@example.com"}
-                    </span>
+                    <span className="text-base truncate">{employee.email || "N/A"}</span>
                 </div>
 
                 {/* Phone with Icon */}

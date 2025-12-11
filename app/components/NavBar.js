@@ -2,9 +2,9 @@
 
 import { Search, Hexagon } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import profile from "../../public/profile.avif";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export default function NavBar() {
     const pathname = usePathname();
@@ -13,7 +13,7 @@ export default function NavBar() {
         { href: "/employees", label: "Employees" },
         { href: "/departments", label: "Departments" },
         { href: "/reportings", label: "Reportings" },
-        { href: "/configurations", label: "Configurations" },
+        { href: "/configurations", label: "Configurations" }
     ];
 
     return (
@@ -58,11 +58,12 @@ export default function NavBar() {
 
                 <button className="w-8 h-8 rounded-full overflow-hidden border border-gray-200">
                     <Image
-                        src={profile}
-                        alt="Profile"
                         width={32}
                         height={32}
+                        src={profile.src}
+                        alt="Profile"
                         className="w-full h-full object-cover"
+                        suppressHydrationWarning
                     />
                 </button>
             </div>
