@@ -2,7 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Clock, Target, Tag, MapPin, GraduationCap, Briefcase, Award } from "lucide-react";
+import {
+    Clock,
+    Target,
+    Tag,
+    MapPin,
+    GraduationCap,
+    Briefcase,
+    Award,
+    Sparkles
+} from "lucide-react";
 
 export default function ConfigurationsLayout({ children }) {
     const pathname = usePathname();
@@ -12,8 +21,9 @@ export default function ConfigurationsLayout({ children }) {
         { href: "/configurations/work_locations", label: "Work Locations", icon: MapPin },
         { href: "/configurations/tags", label: "Tags", icon: Tag },
         { href: "/configurations/skill_types", label: "Skill Types", icon: GraduationCap },
+        { href: "/configurations/skills", label: "Skills", icon: Sparkles },
         { href: "/configurations/job_positions", label: "Job Positions", icon: Briefcase },
-        { href: "/configurations/job_titles", label: "Job Titles", icon: Award },
+        { href: "/configurations/job_titles", label: "Job Titles", icon: Award }
     ];
 
     return (

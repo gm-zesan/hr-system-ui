@@ -26,21 +26,8 @@ const DepartmentListItem = ({ department, isSelected, onToggleSelect, onDelete }
                     isSelected ? "bg-blue-50/50" : "bg-white hover:bg-gray-50"
                 }`}
             >
-                {/* Checkbox */}
-                <td className="p-2 w-12">
-                    <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={(e) => {
-                            e.stopPropagation();
-                            onToggleSelect(department.id);
-                        }}
-                        className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer z-10"
-                    />
-                </td>
-
                 {/* Name with Avatar */}
-                <td className="p-2">
+                <td className="p-2 px-4">
                     <div className="flex items-center gap-3 min-w-0">
                         <div className="w-10 h-10 rounded-full overflow-hidden bg-orange-100 flex-shrink-0">
                             <Image
@@ -56,15 +43,15 @@ const DepartmentListItem = ({ department, isSelected, onToggleSelect, onDelete }
                 </td>
 
                 {/* Manager */}
-                <td className="p-2 text-sm text-gray-600">{department.manager_name || "-"}</td>
+                <td className="p-2 px-4 text-sm text-gray-600">{department.manager_name || "-"}</td>
 
                 {/* Description */}
-                <td className="p-2 text-sm text-gray-600">
+                <td className="p-2 px-4 text-sm text-gray-600">
                     <div className="line-clamp-2">{department.description || "-"}</div>
                 </td>
 
                 {/* is_active */}
-                <td className="p-2 text-sm text-gray-600">
+                <td className="p-2 px-4 text-sm text-gray-600">
                     {department.is_active ? (
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                             Active
@@ -77,7 +64,7 @@ const DepartmentListItem = ({ department, isSelected, onToggleSelect, onDelete }
                 </td>
 
                 {/* Action Buttons */}
-                <td className="p-2">
+                <td className="p-2 px-4">
                     <div className="flex items-center gap-1">
                         <Link
                             href={`/departments/${department.id}`}

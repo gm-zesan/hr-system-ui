@@ -13,14 +13,6 @@ const EmployeeCard = ({ employee, isSelected, onToggleSelect }) => {
                     : "border-gray-200 shadow-sm hover:shadow-md"
             }`}
         >
-            {/* Checkbox */}
-            <input
-                type="checkbox"
-                checked={isSelected}
-                onChange={() => onToggleSelect(employee.id)}
-                className="absolute top-5 right-5 w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer z-10"
-            />
-
             {/* Clickable Card Area */}
             <Link href={`/employees/${employee.id}`} className="block">
                 {/* Employee Avatar - Large Circular */}

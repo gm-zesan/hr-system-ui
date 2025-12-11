@@ -8,10 +8,6 @@ import Link from "next/link";
 import {
     ChevronRight,
     Plus,
-    Users,
-    Archive,
-    Calendar,
-    MoreVertical,
     Search,
     Filter,
     ListFilter,
@@ -257,33 +253,6 @@ export default function Page() {
                         active={activeTab === "Default"}
                         onClick={() => setActiveTab("Default")}
                     />
-                    {/* <TabButton
-            label="My Team"
-            icon={Users}
-            active={activeTab === "My Team"}
-            onClick={() => setActiveTab("My Team")}
-          />
-          <TabButton
-            label="My Department"
-            icon={Users}
-            active={activeTab === "My Department"}
-            onClick={() => setActiveTab("My Department")}
-          />
-          <TabButton
-            label="Archived"
-            icon={Archive}
-            active={activeTab === "Archived"}
-            onClick={() => setActiveTab("Archived")}
-          />
-          <TabButton
-            label="Newly Hired"
-            icon={Calendar}
-            active={activeTab === "Newly Hired"}
-            onClick={() => setActiveTab("Newly Hired")}
-          />
-          <button className="px-3 py-2 text-gray-400 hover:text-gray-600">
-            <MoreVertical className="w-4 h-4" />
-          </button> */}
                 </div>
 
                 {/* Toolbar */}
@@ -491,31 +460,25 @@ export default function Page() {
                                     <table className="w-full">
                                         <thead>
                                             <tr className="bg-gray-50 border-b border-gray-200">
-                                                <th className="p-2 text-left w-12">
-                                                    <input
-                                                        type="checkbox"
-                                                        className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer opacity-0 pointer-events-none"
-                                                    />
-                                                </th>
-                                                <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                                <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                     Name
                                                 </th>
-                                                <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                                <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                     Job Position
                                                 </th>
-                                                <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                                <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                     Email
                                                 </th>
-                                                <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                                <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                     Phone
                                                 </th>
-                                                <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                                <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                     Department
                                                 </th>
-                                                <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                                <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                     Manager
                                                 </th>
-                                                <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                                <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                     Actions
                                                 </th>
                                             </tr>

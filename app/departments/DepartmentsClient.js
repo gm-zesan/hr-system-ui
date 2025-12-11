@@ -419,21 +419,6 @@ export default function DepartmentsClient({
 
             {/* Selection Row + Department Grid/List */}
             <div className="p-6">
-                {viewMode === "grid" && groupBy === "-" && (
-                    <div className="flex items-center gap-3 mb-5">
-                        <input
-                            type="checkbox"
-                            className="w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer"
-                            checked={
-                                selectedDepartments.length === sortedDepartments.length &&
-                                sortedDepartments.length > 0
-                            }
-                            onChange={toggleAll}
-                        />
-                        <span className="text-sm text-gray-600">Select All</span>
-                    </div>
-                )}
-
                 {/* Grid View */}
                 {viewMode === "grid" && (
                     <div>
@@ -474,55 +459,19 @@ export default function DepartmentsClient({
                                     <table className="w-full">
                                         <thead>
                                             <tr className="bg-gray-50 border-b border-gray-200">
-                                                <th className="p-2 text-left w-12">
-                                                    <input
-                                                        type="checkbox"
-                                                        className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer"
-                                                        checked={
-                                                            depts.every((d) =>
-                                                                selectedDepartments.includes(d.id)
-                                                            ) && depts.length > 0
-                                                        }
-                                                        onChange={() => {
-                                                            const allSelected = depts.every((d) =>
-                                                                selectedDepartments.includes(d.id)
-                                                            );
-                                                            if (allSelected) {
-                                                                setSelectedDepartments((prev) =>
-                                                                    prev.filter(
-                                                                        (id) =>
-                                                                            !depts.find(
-                                                                                (d) => d.id === id
-                                                                            )
-                                                                    )
-                                                                );
-                                                            } else {
-                                                                setSelectedDepartments((prev) => [
-                                                                    ...prev,
-                                                                    ...depts
-                                                                        .filter(
-                                                                            (d) =>
-                                                                                !prev.includes(d.id)
-                                                                        )
-                                                                        .map((d) => d.id),
-                                                                ]);
-                                                            }
-                                                        }}
-                                                    />
-                                                </th>
-                                                <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                                <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                     Name
                                                 </th>
-                                                <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                                <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                     Manager
                                                 </th>
-                                                <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                                <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                     Description
                                                 </th>
-                                                <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                                <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                     Status
                                                 </th>
-                                                <th className="p-2 text-left font-semibold text-sm text-gray-700">
+                                                <th className="p-4 text-left font-semibold text-sm text-gray-700">
                                                     Actions
                                                 </th>
                                             </tr>

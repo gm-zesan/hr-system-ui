@@ -26,19 +26,6 @@ const EmployeeListItem = ({ employee, isSelected, onToggleSelect }) => {
                     isSelected ? "bg-blue-50/50" : "bg-white hover:bg-gray-50"
                 }`}
             >
-                {/* Checkbox */}
-                <td className="p-2 w-12">
-                    <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={(e) => {
-                            e.stopPropagation();
-                            onToggleSelect(employee.id);
-                        }}
-                        className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer z-10"
-                    />
-                </td>
-
                 {/* Name with Avatar */}
                 <td className="p-2">
                     <div className="flex items-center gap-3 min-w-0">

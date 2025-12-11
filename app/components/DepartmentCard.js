@@ -20,14 +20,6 @@ const DepartmentCard = ({ department, isSelected, onToggleSelect, onDelete }) =>
                     : "border-gray-200 shadow-sm hover:shadow-md"
             }`}
         >
-            {/* Checkbox */}
-            <input
-                type="checkbox"
-                checked={isSelected}
-                onChange={() => onToggleSelect(department.id)}
-                className="absolute top-4 right-4 w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer z-10"
-            />
-
             {/* Clickable Card Area */}
             <Link href={`/departments/${department.id}`} className="block">
                 {/* Department Avatar */}
