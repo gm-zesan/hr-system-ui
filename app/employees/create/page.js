@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import CreateEmployeeForm from "./CreateEmployeeForm";
 
 export default async function CreateEmployeePage() {
-    console.log("hay");
     async function handleCreateEmployee(formData) {
         "use server";
 

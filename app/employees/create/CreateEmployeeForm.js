@@ -180,7 +180,7 @@ export default function CreateEmployeeForm({ onSubmit }) {
                                 <div className="flex justify-center lg:justify-start">
                                     <label className="w-32 h-32 rounded-full border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-center p-4 hover:border-blue-500 transition-colors cursor-pointer relative overflow-hidden">
                                         {formData.profile_picture ? (
-                                            <Image
+                                            <img
                                                 src={formData.profile_picture}
                                                 alt="Profile"
                                                 className="absolute inset-0 object-cover rounded-full w-full h-full"

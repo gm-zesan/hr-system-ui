@@ -4,6 +4,8 @@ import { createSkill } from "@/api/skills/createSkill";
 import { redirect } from "next/navigation";
 import CreateSkillForm from "./CreateSkillForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function CreateSkillPage() {
     // Fetch skill types for dropdown
     const skillTypesData = await getSkillTypes(1, 100);

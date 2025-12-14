@@ -1,12 +1,32 @@
 "use client";
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, useEffect } from "react";
 import { ChevronRight, Mail, Phone, DollarSign, Tag, Upload, X } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 export default function EditEmployeeForm({ employee, onSubmit }) {
     const [activeTab, setActiveTab] = useState("work");
     const [isPending, startTransition] = useTransition();
+
+    // Dynamic data from APIs
+    const [departments, setDepartments] = useState([]);
+    const [jobPositions, setJobPositions] = useState([]);
+    const [jobTitles, setJobTitles] = useState([]);
+    const [workLocations, setWorkLocations] = useState([]);
+    const [tags, setTags] = useState([]);
+    const [employees, setEmployees] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Static working schedules
+    const workingSchedules = [
+        { id: "morning", name: "Morning Shift (8 AM - 4 PM)" },
+        { id: "day", name: "Day Shift (9 AM - 5 PM)" },
+        { id: "evening", name: "Evening Shift (2 PM - 10 PM)" },
+        { id: "night", name: "Night Shift (10 PM - 6 AM)" },
+        { id: "flexible", name: "Flexible Hours" }
+    ];
+
     const [formData, setFormData] = useState({
         employee_code: employee.employee_code || "",
         first_name: employee.first_name || "",
@@ -37,21 +57,54 @@ export default function EditEmployeeForm({ employee, onSubmit }) {
         probation_end_date: employee.probation_end_date || "",
         salary: employee.salary?.toString() || "",
         work_shift: employee.work_shift || "",
-        tag_ids: employee.tag_ids || [],
+        tag_ids: employee.tags ? employee.tags.map((tag) => tag.id.toString()) : [],
         is_active: employee.is_active ?? true,
         profile_picture: employee.profile_picture || ""
     });
 
-    const availableTags = [
-        { id: "1", label: "Senior" },
-        { id: "2", label: "Junior" },
-        { id: "3", label: "Remote" },
-        { id: "4", label: "On-site" },
-        { id: "5", label: "Full-stack" },
-        { id: "6", label: "Backend" },
-        { id: "7", label: "Frontend" },
-        { id: "8", label: "Team Lead" }
-    ];
+    // Fetch all dropdown data
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+                const [deptRes, posRes, titleRes, locRes, tagRes, empRes] = await Promise.all([
+                    fetch(`${baseURL}/departments/`),
+                    fetch(`${baseURL}/job_positions/`),
+                    fetch(`${baseURL}/job_titles/`),
+                    fetch(`${baseURL}/work_locations/`),
+                    fetch(`${baseURL}/tags/`),
+                    fetch(`${baseURL}/employees/?limit=100`)
+                ]);
+
+                const [deptData, posData, titleData, locData, tagData, empData] = await Promise.all(
+                    [
+                        deptRes.json(),
+                        posRes.json(),
+                        titleRes.json(),
+                        locRes.json(),
+                        tagRes.json(),
+                        empRes.json()
+                    ]
+                );
+
+                setDepartments(deptData.data?.items || deptData.data || []);
+                setJobPositions(posData.data?.items || posData.data || []);
+                setJobTitles(titleData.data?.items || titleData.data || []);
+                setWorkLocations(locData.data?.items || locData.data || []);
+                setTags(tagData.data?.items || tagData.data || []);
+                setEmployees(empData.data?.items || []);
+
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching form data:", error);
+                toast.error("Failed to load form options");
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const handleInputChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -93,6 +146,11 @@ export default function EditEmployeeForm({ employee, onSubmit }) {
         });
     };
 
+    // Use employee's profile picture from API or fallback to local static image
+    const profilePictureURL = formData.profile_picture
+        ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${formData.profile_picture}`
+        : `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/profiles/profile.avif`;
+
     return (
         <>
             {/* Breadcrumb */}
@@ -116,7 +174,8 @@ export default function EditEmployeeForm({ employee, onSubmit }) {
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Edit Employee</h1>
                     <p className="text-gray-600 mt-1">
-                        Update {employee.first_name} {employee.last_name}'s information
+                        Update {employee.first_name} {employee.last_name}
+                        {"'"}s information
                     </p>
                 </div>
             </div>
@@ -130,10 +189,12 @@ export default function EditEmployeeForm({ employee, onSubmit }) {
                                 <div className="flex justify-center lg:justify-start">
                                     <label className="w-32 h-32 rounded-full border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-center p-4 hover:border-blue-500 transition-colors cursor-pointer relative overflow-hidden">
                                         {formData.profile_picture ? (
-                                            <img
-                                                src={formData.profile_picture}
+                                            <Image
+                                                src={profilePictureURL}
                                                 alt="Profile"
-                                                className="absolute inset-0 w-full h-full object-cover rounded-full"
+                                                fill
+                                                unoptimized
+                                                className="object-cover rounded-full"
                                             />
                                         ) : (
                                             <>
@@ -395,11 +456,14 @@ export default function EditEmployeeForm({ employee, onSubmit }) {
                                                 }
                                                 name="department_id"
                                                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                disabled={loading}
                                             >
                                                 <option value="">Select Department</option>
-                                                <option value="1">Engineering</option>
-                                                <option value="2">Marketing</option>
-                                                <option value="3">Sales</option>
+                                                {departments.map((dept) => (
+                                                    <option key={dept.id} value={dept.id}>
+                                                        {dept.name}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
 
@@ -417,10 +481,14 @@ export default function EditEmployeeForm({ employee, onSubmit }) {
                                                 }
                                                 name="job_position_id"
                                                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                disabled={loading}
                                             >
                                                 <option value="">Select Position</option>
-                                                <option value="1">Software Engineer</option>
-                                                <option value="2">Senior Engineer</option>
+                                                {jobPositions.map((pos) => (
+                                                    <option key={pos.id} value={pos.id}>
+                                                        {pos.title}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
 
@@ -438,10 +506,14 @@ export default function EditEmployeeForm({ employee, onSubmit }) {
                                                 }
                                                 name="job_title_id"
                                                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                disabled={loading}
                                             >
                                                 <option value="">Select Title</option>
-                                                <option value="1">Developer</option>
-                                                <option value="2">Team Lead</option>
+                                                {jobTitles.map((title) => (
+                                                    <option key={title.id} value={title.id}>
+                                                        {title.name}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
                                     </div>
@@ -459,11 +531,16 @@ export default function EditEmployeeForm({ employee, onSubmit }) {
                                                         e.target.value
                                                     )
                                                 }
+                                                name="work_location_id"
                                                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                disabled={loading}
                                             >
                                                 <option value="">Select Location</option>
-                                                <option value="1">Dhaka Office</option>
-                                                <option value="2">Chittagong Office</option>
+                                                {workLocations.map((loc) => (
+                                                    <option key={loc.id} value={loc.id}>
+                                                        {loc.name}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
 
@@ -478,10 +555,15 @@ export default function EditEmployeeForm({ employee, onSubmit }) {
                                                 }
                                                 name="manager_id"
                                                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                disabled={loading}
                                             >
                                                 <option value="">Select Manager</option>
-                                                <option value="1">John Smith</option>
-                                                <option value="2">Jane Doe</option>
+                                                {employees.map((emp) => (
+                                                    <option key={emp.id} value={emp.id}>
+                                                        {emp.first_name} {emp.last_name} (
+                                                        {emp.employee_code})
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
                                     </div>
@@ -661,15 +743,11 @@ export default function EditEmployeeForm({ employee, onSubmit }) {
                                                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                             >
                                                 <option value="">Select Shift</option>
-                                                <option value="1">
-                                                    Morning Shift (9 AM - 5 PM)
-                                                </option>
-                                                <option value="2">
-                                                    Evening Shift (2 PM - 10 PM)
-                                                </option>
-                                                <option value="3">
-                                                    Night Shift (10 PM - 6 AM)
-                                                </option>
+                                                {workingSchedules.map((schedule) => (
+                                                    <option key={schedule.id} value={schedule.id}>
+                                                        {schedule.name}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
 
@@ -680,15 +758,16 @@ export default function EditEmployeeForm({ employee, onSubmit }) {
                                             <div className="relative">
                                                 <div className="w-full min-h-[44px] px-4 py-2.5 pr-12 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 bg-white flex flex-wrap gap-2 items-center">
                                                     {formData.tag_ids.map((tagId) => {
-                                                        const tag = availableTags.find(
-                                                            (t) => t.id === tagId
+                                                        const tag = tags.find(
+                                                            (t) =>
+                                                                t.id.toString() === tagId.toString()
                                                         );
                                                         return tag ? (
                                                             <span
                                                                 key={tagId}
                                                                 className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
                                                             >
-                                                                {tag.label}
+                                                                {tag.name}
                                                                 <button
                                                                     type="button"
                                                                     onClick={() =>
@@ -714,18 +793,19 @@ export default function EditEmployeeForm({ employee, onSubmit }) {
                                                             }
                                                         }}
                                                         className="flex-1 min-w-[120px] border-none outline-none bg-transparent text-gray-500"
+                                                        disabled={loading}
                                                     >
                                                         <option value="">Select tags...</option>
-                                                        {availableTags
+                                                        {tags
                                                             .filter(
                                                                 (tag) =>
                                                                     !formData.tag_ids.includes(
-                                                                        tag.id
+                                                                        tag.id.toString()
                                                                     )
                                                             )
                                                             .map((tag) => (
                                                                 <option key={tag.id} value={tag.id}>
-                                                                    {tag.label}
+                                                                    {tag.name}
                                                                 </option>
                                                             ))}
                                                     </select>

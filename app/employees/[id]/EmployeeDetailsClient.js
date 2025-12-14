@@ -50,6 +50,10 @@ export default function EmployeeDetailsClient({ employee, onDelete }) {
 
     const fullName = `${employee.first_name} ${employee.last_name}`;
 
+    const profilePictureURL = employee.profile_picture
+        ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${employee.profile_picture}`
+        : `${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/profiles/profile.avif`;
+
     return (
         <>
             {/* Breadcrumb */}
@@ -91,9 +95,12 @@ export default function EmployeeDetailsClient({ employee, onDelete }) {
                                 <div className="w-32 h-32 rounded-full border-2 border-gray-300 flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100 overflow-hidden">
                                     {employee.profile_picture ? (
                                         <img
-                                            src={employee.profile_picture}
-                                            alt="Profile"
+                                            src={profilePictureURL}
+                                            alt={fullName}
                                             className="w-full h-full object-cover"
+                                            width={120}
+                                            height={120}
+                                            suppressHydrationWarning
                                         />
                                     ) : (
                                         <div className="text-4xl font-bold text-blue-600">
@@ -344,7 +351,9 @@ export default function EmployeeDetailsClient({ employee, onDelete }) {
                                             Employment Type
                                         </label>
                                         <p className="text-base text-gray-900 capitalize">
-                                            {employee.employment_type.replace("-", " ")}
+                                            {employee.employment_type
+                                                ? employee.employment_type.replace("-", " ")
+                                                : "N/A"}
                                         </p>
                                     </div>
 
@@ -396,14 +405,18 @@ export default function EmployeeDetailsClient({ employee, onDelete }) {
                                             Tags
                                         </label>
                                         <div className="flex flex-wrap gap-2">
-                                            {employee.tags.map((tag, index) => (
-                                                <span
-                                                    key={index}
-                                                    className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
-                                                >
-                                                    {tag}
-                                                </span>
-                                            ))}
+                                            {employee.tags && employee.tags.length > 0 ? (
+                                                employee.tags.map((tag) => (
+                                                    <span
+                                                        key={tag.id}
+                                                        className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
+                                                    >
+                                                        {tag.name}
+                                                    </span>
+                                                ))
+                                            ) : (
+                                                <p className="text-base text-gray-400">No tags</p>
+                                            )}
                                         </div>
                                     </div>
 
