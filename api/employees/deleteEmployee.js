@@ -1,16 +1,11 @@
+import axiosInstance from "../axios";
+
 export async function deleteEmployee(id) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/employees/${id}`, {
-            method: "DELETE"
-        });
-
-        if (!response.ok) {
-            throw new Error("Failed to delete employee");
-        }
-
+        await axiosInstance.delete(`/employees/${id}`);
         return true;
     } catch (error) {
         console.error("Error deleting employee:", error);
-        throw error;
+        throw new Error(error.response?.data?.detail || "Failed to delete employee");
     }
 }

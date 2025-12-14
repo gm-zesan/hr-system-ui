@@ -1,17 +1,11 @@
+import axiosInstance from "../axios";
+
 export async function getEmployee(id) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/employees/${id}`, {
-            cache: "no-store"
-        });
-
-        if (!response.ok) {
-            throw new Error("Failed to fetch employee");
-        }
-
-        const result = await response.json();
-        return result.data;
+        const response = await axiosInstance.get(`/employees/${id}`);
+        return response.data.data;
     } catch (error) {
         console.error("Error fetching employee:", error);
-        throw error;
+        throw new Error(error.response?.data?.detail || "Failed to fetch employee");
     }
 }

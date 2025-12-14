@@ -29,7 +29,8 @@ export default function NavBar() {
 
                 <nav className="hidden md:flex items-center gap-6 text-md font-medium text-gray-500">
                     {navItems.map((item) => {
-                        const isActive = pathname === item.href;
+                        const isActive =
+                            pathname === item.href || pathname.startsWith(item.href + "/");
                         return (
                             <Link
                                 key={item.href}

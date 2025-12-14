@@ -1,14 +1,32 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-import { ChevronRight, Mail, Phone, DollarSign, Tag, Calendar, Pencil, Trash2 } from "lucide-react";
+import React, { useState, useEffect, useRef, useTransition } from "react";
+import {
+    ChevronRight,
+    Mail,
+    Phone,
+    DollarSign,
+    Tag,
+    Calendar,
+    Pencil,
+    Trash2,
+    Plus,
+    X
+} from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
+import { attachSkill, removeSkill, getAvailableSkills } from "@/api/employees/employeeSkills";
 
 export default function EmployeeDetailsClient({ employee, onDelete }) {
     const [activeTab, setActiveTab] = useState("work");
     const [deleteModal, setDeleteModal] = useState({ show: false });
     const [isModalAnimating, setIsModalAnimating] = useState(false);
+    const [showSkillModal, setShowSkillModal] = useState(false);
+    const [isSkillModalAnimating, setIsSkillModalAnimating] = useState(false);
+    const [availableSkills, setAvailableSkills] = useState([]);
+    const [selectedSkillId, setSelectedSkillId] = useState("");
+    const [employeeSkills, setEmployeeSkills] = useState(employee.skills || []);
+    const [isPending, startTransition] = useTransition();
     const searchParams = useSearchParams();
     const showUpdated = searchParams.get("updated") === "true";
     const toastShown = useRef(false);
@@ -46,6 +64,66 @@ export default function EmployeeDetailsClient({ employee, onDelete }) {
             }
             toast.error(error.message || "Failed to delete employee");
         }
+    };
+
+    const handleOpenSkillModal = async () => {
+        setShowSkillModal(true);
+        setTimeout(() => {
+            setIsSkillModalAnimating(true);
+        }, 10);
+
+        // Fetch available skills
+        try {
+            const skills = await getAvailableSkills();
+            // Filter out skills already attached
+            const attachedSkillIds = employeeSkills.map((s) => s.id);
+            const filtered = skills.filter((s) => !attachedSkillIds.includes(s.id));
+            setAvailableSkills(filtered);
+        } catch (error) {
+            toast.error("Failed to load skills");
+        }
+    };
+
+    const handleCloseSkillModal = () => {
+        setIsSkillModalAnimating(false);
+        setTimeout(() => {
+            setShowSkillModal(false);
+            setSelectedSkillId("");
+        }, 300);
+    };
+
+    const handleAttachSkill = async () => {
+        if (!selectedSkillId) {
+            toast.error("Please select a skill");
+            return;
+        }
+
+        startTransition(async () => {
+            try {
+                const updatedEmployee = await attachSkill(employee.id, selectedSkillId);
+                setEmployeeSkills(updatedEmployee.skills || []);
+                toast.success("Skill attached successfully");
+                handleCloseSkillModal();
+            } catch (error) {
+                toast.error(error.message || "Failed to attach skill");
+            }
+        });
+    };
+
+    const handleRemoveSkill = async (skillId) => {
+        if (!confirm("Are you sure you want to remove this skill?")) {
+            return;
+        }
+
+        startTransition(async () => {
+            try {
+                const updatedEmployee = await removeSkill(employee.id, skillId);
+                setEmployeeSkills(updatedEmployee.skills || []);
+                toast.success("Skill removed successfully");
+            } catch (error) {
+                toast.error(error.message || "Failed to remove skill");
+            }
+        });
     };
 
     const fullName = `${employee.first_name} ${employee.last_name}`;
@@ -421,6 +499,48 @@ export default function EmployeeDetailsClient({ employee, onDelete }) {
                                     </div>
 
                                     <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <label className="block text-sm font-medium text-gray-500">
+                                                Skills
+                                            </label>
+                                            <button
+                                                onClick={handleOpenSkillModal}
+                                                disabled={isPending}
+                                                className="inline-flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors disabled:opacity-50"
+                                            >
+                                                <Plus className="w-4 h-4" />
+                                                Add Skill
+                                            </button>
+                                        </div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {employeeSkills && employeeSkills.length > 0 ? (
+                                                employeeSkills.map((skill) => (
+                                                    <span
+                                                        key={skill.id}
+                                                        className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm group"
+                                                    >
+                                                        {skill.name}
+                                                        <button
+                                                            onClick={() =>
+                                                                handleRemoveSkill(skill.id)
+                                                            }
+                                                            disabled={isPending}
+                                                            className="hover:bg-green-200 rounded-full p-0.5 transition-colors disabled:opacity-50"
+                                                            title="Remove skill"
+                                                        >
+                                                            <X className="w-3 h-3" />
+                                                        </button>
+                                                    </span>
+                                                ))
+                                            ) : (
+                                                <p className="text-base text-gray-400">
+                                                    No skills assigned
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div>
                                         <label className="block text-sm font-medium text-gray-500 mb-1">
                                             Status
                                         </label>
@@ -530,6 +650,55 @@ export default function EmployeeDetailsClient({ employee, onDelete }) {
                                     className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-md transition-colors"
                                 >
                                     Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Add Skill Modal */}
+            {showSkillModal && (
+                <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4">
+                    <div
+                        className={`bg-white rounded-lg shadow-xl max-w-md w-full transform transition-all duration-300 ${
+                            isSkillModalAnimating ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                        }`}
+                    >
+                        <div className="p-6">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Add Skill</h3>
+                            <div className="mb-6">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Select Skill
+                                </label>
+                                <select
+                                    value={selectedSkillId}
+                                    onChange={(e) => setSelectedSkillId(e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    disabled={isPending}
+                                >
+                                    <option value="">Choose a skill...</option>
+                                    {availableSkills.map((skill) => (
+                                        <option key={skill.id} value={skill.id}>
+                                            {skill.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="flex justify-end gap-3">
+                                <button
+                                    onClick={handleCloseSkillModal}
+                                    disabled={isPending}
+                                    className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors disabled:opacity-50"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleAttachSkill}
+                                    disabled={isPending || !selectedSkillId}
+                                    className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md transition-colors disabled:opacity-50"
+                                >
+                                    {isPending ? "Adding..." : "Add Skill"}
                                 </button>
                             </div>
                         </div>
